@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Books</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css" />
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    
+    <link rel="stylesheet" href="/css/BooksStyle.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="Shortcut Icon" type="image/png" href="images/favicon.png">
+</head>
+<body>
+    
+<!-- header section starts  -->
+
+<header class="header">
+
+    <section class="header-1">
+
+        <a href="/" class="logo"> <i class="fas fa-book"></i> READy </a>
+
+        <form action="/search" method="get" class="search-form">
+          <input type="search" name="keyword" placeholder="search by book name" id="search-box">
+          <button type="submit" class="a">
+            <label for="search-box" class="fas fa-search"></label>
+          </button>
+      </form>
+
+        <div class="icons">
+            <div id="search-btn" class="fas fa-search"></div>
+            <a href="wishlist" class="fas fa-heart"></a>
+            <a href="cart" class="fas fa-shopping-cart"></a>
+            <% try{ %>
+              <% if(user.email != undefined) {%>
+                <a id="login-btn" class="#" href="/logout">
+                  Sign Out
+                </a> <!-- Because of ejs these has to be changed... from login.ejs to just login -->
+            <% } else {%> 
+              <a id="login-btn" class="#" href="/login">
+                Sign In
+              </a>
+              <% }} catch { %> 
+                <a id="login-btn" class="#" href="/login">
+                  Sign In
+                </a>
+                <% } %>
+        </div>
+
+    </section>
+
+    <div class="header-2">
+        <nav class="navbar">
+
+        <a href="/">HOME</a>
+        <a href="/">ABOUT US</a>
+        <a href="books">BOOKS</a>
+        <a href="/">NEW REALSES</a>
+        <a href="/">BEST SALES</a>
+        <a href="contactUS">CONTACT US</a>
+        <!-- <a href="con.html">CONTACT US</a> -->
+        </nav>
+    </div>
+
+</header>
+
+<!-- header section ends -->
+
+
+
+<!-- Books section starts  -->
+
+
+    <div class="container">
+        <div class="filter-coontainer">
+            <div class="filter">
+                <h2>Filter Result</h2>
+                <div class="div-hr"></div>
+                <form id="sort-form" action="/sort" method="post">
+                  <div class="summary-price">
+                      <details>
+                          <summary><span style="font-size: 16px;">Sort</span></summary>
+                          <input type="radio" style="margin: 3px;" name="sort" value="Price: Low to High"><span style="font-size: 16px;">Price: Low to High</span><br>
+                          <input type="radio" style="margin: 3px;" name="sort" value="Price: High to Low"><span style="font-size: 16px;">Price: High to Low</span><br> 
+                          <input type="radio" style="margin: 3px;" name="sort" value="Rate: Low to High"><span style="font-size: 16px;">Rate: Low to High</span><br>
+                          <input type="radio" style="margin: 3px;" name="sort" value="Rate: High to Low"><span style="font-size: 16px;">Rate: High to Low</span><br>
+                      </details>
+                  </div>
+              </form>
+                <div class="div-hr"></div>
+                <form id="rate-form" action="/sort" method="post">
+                  <div class="summary-rating">
+                      <details>
+                          <summary><span style="font-size: 16px;">rating</span></summary>
+                          <input type="radio" style="margin: 3px;" name="rate" value="5"><span class="rating-stars">
+                              <i class="fa fa-star"></i>
+                              <i class="fa fa-star"></i>
+                              <i class="fa fa-star"></i>
+                              <i class="fa fa-star"></i>
+                              <i class="fa fa-star"></i>
+                          </span><br>
+                          <input type="radio" style="margin: 3px;" name="rate" value="4"><span class="rating-stars">
+                              <i class="fa fa-star"></i>
+                              <i class="fa fa-star"></i>
+                              <i class="fa fa-star"></i>
+                              <i class="fa fa-star"></i>+
+                          </span><br> 
+                          <input type="radio" style="margin: 3px;" name="rate" value="3"><span class="rating-stars">
+                              <i class="fa fa-star"></i>
+                              <i class="fa fa-star"></i>
+                              <i class="fa fa-star"></i>+
+                          </span><br>
+                          <input type="radio" style="margin: 3px;" name="rate" value="2"><span class="rating-stars">
+                              <i class="fa fa-star"></i>
+                              <i class="fa fa-star"></i>+
+                          </span><br>
+                          <input type="radio" style="margin: 3px;" name="rate" value="1"><span class="rating-stars">
+                              <i class="fa fa-star"></i>+
+                          </span>
+                      </details>
+                  </div>
+              </form>
+            </div>
+        </div>
+        
+        <div class="box-container">
+            <div class="row">
+              <% books.forEach(book => { %>
+                <div class="box">
+                  <a href="Book/<%= book._id %>">
+                    <div class="box-top"><img src="<%= book.imgSrc %>" alt=""></div>
+                    <div class="box-bottom">
+                      <div class="box-info">
+                        <p>Name: <%= book.nameOfBook %></p>
+                        <p>Price: $<%=book.priceOfBook %></p>
+                        <p><%= book.rateOfBook.toFixed(2) %> <span class="rating-stars">
+                          <i class="fa fa-star"></i>
+                        </span></p>
+                        <hr class="hr-content">
+                        <% try{ %>
+                          <% if(user.email != undefined) {%>
+                        <form action="/cart" method="post">
+                          <input type="hidden" name="user_email" value="<%=user.email%>" id="">
+                          <input type="hidden" name="book_name" value="<%= book.nameOfBook %>" id="">
+                        <button type="submit" class="btn cart-btn"><i class="fas fa-shopping-cart"></i></button>
+                        </form>
+                        <form class="bb1" action="/wishlist" method="post">
+                          <input type="hidden" name="user_email" value="<%=user.email%>" id="">
+                          <input type="hidden" name="book_name" value="<%= book.nameOfBook %>" id="">
+                        <button  type="submit" class="btn wishlist-btn"><i class="far fa-heart"></i></button>
+                      </form>
+                      <% } else {%> <form action="/login" method="get">
+                        <button type="submit" class="btn cart-btn" ><i class="fas fa-shopping-cart" ></i></button>
+                      </form>
+                      <form action="/login" method="get">
+                          <button type="submit" class="btn wishlist-btn"><i class="far fa-heart"></i></button>
+                      </form>
+                    <% }} catch { %>
+                  <form action="/login" method="get">
+                  <button type="submit" class="btn cart-btn" ><i class="fas fa-shopping-cart" ></i></button>
+                </form>
+                <form action="/login" method="get">
+                    <button type="submit" class="btn wishlist-btn"><i class="far fa-heart"></i></button>
+                </form>
+                <% } %>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+              <% }) %>
+            </div>
+          </div>
+
+          <style>
+            #bt1 {
+              background-color: green;
+              color: white;
+              padding: 10px;
+              border: none;
+              border-radius: 5px;
+              cursor: pointer;
+            }
+          
+            #bt1:hover {
+              background-color: darkgreen;
+            }
+          
+            #bt2 {
+              background-color: green;
+              color: white;
+              padding: 10px;
+              border: none;
+              border-radius: 3px; /* adjust this value to change the roundness of the button */
+              cursor: pointer;
+            }
+          
+            #bt2:hover {
+              background-color: red;
+            }
+          
+            .fa-shopping-cart,
+            .fa-heart {
+              margin-right: 5px;
+            }
+          </style>
+<script>
+  searchForm = document.querySelector('.search-form')
+
+document.querySelector('#search-btn').onclick = () => {
+  searchForm.classList.toggle('active')
+}
+      // get the form element
+      let form1 = document.getElementById('sort-form');
+    
+    // add an event listener to the radio buttons to listen for changes in the selected option
+    let sortRadioButtons1 = document.getElementsByName('sort');
+    for (let i = 0; i < sortRadioButtons1.length; i++) {
+        sortRadioButtons1[i].addEventListener('change', function() {
+            // submit the form automatically when a radio button is selected
+            form1.submit();
+        });
+    }
+
+    let form2 = document.getElementById('rate-form');
+    
+    // add an event listener to the radio buttons to listen for changes in the selected option
+    let sortRadioButtons2 = document.getElementsByName('rate');
+    for (let i = 0; i < sortRadioButtons2.length; i++) {
+        sortRadioButtons2[i].addEventListener('change', function() {
+            // submit the form automatically when a radio button is selected
+            form2.submit();
+        });
+    }
+  
+    // const cartBtns = document.querySelectorAll('.cart-btn');
+    // cartBtns.forEach(btn => {
+    //     btn.addEventListener('click', () => {
+    //         alert('New book added to cart!');
+    //     });
+    // });
+
+    // const wishlistBtns = document.querySelectorAll('.wishlist-btn');
+    // wishlistBtns.forEach(btn => {
+    //     btn.addEventListener('click', () => {
+    //         alert('New book added to wishlist!');
+    //     });
+    // });
+</script>
+
+</body>
+</html>
